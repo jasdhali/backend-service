@@ -32,7 +32,8 @@ router.get('/', function (req, res) {
         else
             message = "Successfully retrived all profiles";
 
-        return res.send({ error: false, data: results, message: message });
+        //return res.send({ error: false, data: results, message: message });
+        return res.send({ results });
     });
 });
 
@@ -53,5 +54,27 @@ router.post('/', function (req, res) {
     });
 });
 
+// retrieve book by id 
+router.get('/:id', function (req, res) {
+  
+    let id = req.params.id;
+  
+    if (!id) {
+        return res.status(400).send({ error: true, message: 'Please provide profile id' });
+    }
+  
+    dbConn.query('SELECT * FROM profile where id=?', id, function (error, results, fields) {
+        if (error) throw error;
+
+        // check has data or not
+        let message = "";
+        if (results === undefined || results.length == 0)
+            message = "Profile not found";
+        else
+            message = "Successfully retrived profile data";
+
+        return res.send({ error: false, data: results[0], message: message });
+    });
+});
  
 module.exports = router;
