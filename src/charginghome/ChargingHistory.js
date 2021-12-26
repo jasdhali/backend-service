@@ -21,7 +21,7 @@ router.use(bodyParser.urlencoded({
 
 // retrieve all payments 
 router.get('/', function (req, res) {
-    dbConn.query('SELECT * FROM account_balance', function (error, results, fields) {
+    dbConn.query('SELECT * FROM chargingHistory', function (error, results, fields) {
         if (error) throw error;
 
         // check has data or not
@@ -29,7 +29,7 @@ router.get('/', function (req, res) {
         if (results === undefined || results.length == 0)
             message = "Profile table is empty";
         else
-            message = "Successfully retrived all profiles";
+            message = "Successfully retrived all charging history";
 
         //return res.send({ error: false, data: results, message: message });
         return res.send({ results });
@@ -53,7 +53,7 @@ router.post('/', function (req, res) {
     });
 });
 
-// retrieve balance by id 
+// retrieve history by id 
 router.get('/:id', function (req, res) {
   
     let id = req.params.id;
@@ -62,7 +62,7 @@ router.get('/:id', function (req, res) {
         return res.status(400).send({ error: true, message: 'Please provide profile id' });
     }
   
-    dbConn.query('SELECT * FROM account_balance where user_id = ?', id, function (error, results, fields) {
+    dbConn.query('SELECT * FROM chargingHistory where user_id = ?', id, function (error, results, fields) {
         if (error) throw error;
 
         // check has data or not
