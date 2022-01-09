@@ -47,7 +47,7 @@ router.post('/', function (req, res) {
         return res.status(400).send({ error:true, message: 'Please provide first name and last name' });
 
     // insert to db
-    dbConn.query("INSERT INTO account_balance (first_name,last_name,phone_no) VALUES (?, ?,'713.517.7075')", [fname, lname ], function (error, results, fields) {
+    dbConn.query("INSERT INTO accountBalance (first_name,last_name,phone_no) VALUES (?, ?,'713.517.7075')", [fname, lname ], function (error, results, fields) {
         if (error) throw error;
         return res.send({ error: false, data: results, message: 'profile successfully created' });
     });
@@ -62,7 +62,7 @@ router.get('/:id', function (req, res) {
         return res.status(400).send({ error: true, message: 'Please provide profile id' });
     }
   
-    dbConn.query('SELECT * FROM chargingHistory where user_id = ?', id, function (error, results, fields) {
+    dbConn.query('SELECT * FROM chargingHistory where userId = ?', id, function (error, results, fields) {
         if (error) throw error;
 
         // check has data or not

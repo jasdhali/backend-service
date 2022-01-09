@@ -88,6 +88,35 @@ router.get('/userid/:id', function (req, res) {
 });
 
 // retrieve user profile by userName and password 
+router.get('/username/:userId/:passphrase', function (req, res) {
+  
+    let id = req.params.userId;
+    let passphrase = req.params.passphrase;
+  
+    if (!id) {
+        return res.status(400).send({ error: true, message: 'Please provide userName' });
+    }
+    if (!passphrase) {
+        return res.status(400).send({ error: true, message: 'Please provide valid passphrase' });
+    }
+    const search_val = mysql.raw("'"+id+"'")
+    const pwd_val = mysql.raw("'"+passphrase+"'")
+
+    dbConn.query('SELECT * FROM profile where (userName = ? or emailId =?) and password = ? ' , [search_val,search_val, pwd_val], function (error, results, fields) {
+        if (error) throw error;
+
+        // check has data or not
+        let message = "";
+        if (results === undefined || results.length == 0)
+            message = "Userid or password wrong";
+        else
+            message = "Successfully retrived user data";
+
+        return res.send({ error: false, data: results[0], message: message });
+    });
+});
+
+// retrieve user profile by userName and password 
 router.get('/username/:userId', function (req, res) {
   
     let id = req.params.userId;
@@ -95,15 +124,16 @@ router.get('/username/:userId', function (req, res) {
     if (!id) {
         return res.status(400).send({ error: true, message: 'Please provide userName' });
     }
-    const search_val=mysql.raw("'"+id+"'")
-  
-    dbConn.query('SELECT * FROM profile where userName = ? ' , [search_val], function (error, results, fields) {
+    const search_val = mysql.raw("'"+id+"'")
+
+    console.log( search_val );
+    dbConn.query('SELECT * FROM profile where (userName = ? or emailId =?) ' , [search_val,search_val ], function (error, results, fields) {
         if (error) throw error;
 
         // check has data or not
         let message = "";
         if (results === undefined || results.length == 0)
-            message = "User not found";
+            message = "Userid or password wrong";
         else
             message = "Successfully retrived user data";
 

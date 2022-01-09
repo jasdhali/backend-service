@@ -10,6 +10,7 @@ var books = require('./server')
 var profile = require('./src/profile')
 var accounts = require('./src/payment/accounts')
 var otpOperations = require('./src/otp/otpOperations')
+var chgops = require('./src/charginghome/ChargerOperations')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -20,6 +21,7 @@ app.use('/books', books)
 app.use('/profile', profile)
 app.use('/accounts', accounts)
 app.use('/otpOperations', otpOperations)
+app.use('/chgops', chgops)
 
 
 // view engine setup
