@@ -22,13 +22,13 @@ router.use(bodyParser.urlencoded({
 // retrieve chargerLocations by name
 router.get('/:name', function (req, res) {
   
-    let id = req.params.name;
+    let chgName = req.params.name;
   
-    if (!id) {
+    if (!chgName) {
         return res.status(400).send({ error: true, message: 'Please provide profile id' });
     }
   
-    dbConn.query('SELECT * FROM chargerLocation where name = ?', id, function (error, results, fields) {
+    dbConn.query('SELECT * FROM chargerLocation where name = ?', chgName, function (error, results, fields) {
         if (error) throw error;
 
         // check has data or not
