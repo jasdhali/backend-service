@@ -19,6 +19,26 @@ router.use(bodyParser.urlencoded({
     extended: true
 }));
 
+
+router.get('/ByUserId/:userId', function (req, res) {
+
+    const userId = req.params.userId;
+    
+    // validation
+    if ( !userId )
+        return res.status(400).send({ error:true, message: 'Please provide proper userId' });
+
+    // Select rom Charging History
+    dbConn.query(" Select  ChgHist.startedAt , ChgHist.finishedAt , chg.Name , 0 amountCharged " +
+    " From    chargingHistory ChgHist , charger chg " + 
+    " where   ChgHist.userId = ? " +
+    " AND     ChgHist.chargerId = chg.id",  
+    [userId], function (error, results, fields) {
+        if (error) throw error;
+        return res.send({ error: false, data: results, message: 'Charging history found successfully' });
+    });
+});
+
 // retrieve all payments 
 router.get('/', function (req, res) {
     dbConn.query('SELECT * FROM chargingHistory', function (error, results, fields) {
@@ -52,7 +72,7 @@ router.post('/', function (req, res) {
         return res.send({ error: false, data: results, message: 'profile successfully created' });
     });
 });
-
+/*
 // retrieve history by id 
 router.get('/:id', function (req, res) {
   
@@ -74,6 +94,6 @@ router.get('/:id', function (req, res) {
 
         return res.send({ error: false, data: results[0], message: message });
     });
-});
+});*/
  
 module.exports = router;

@@ -33,7 +33,7 @@ router.get('/', function (req, res) {
             message = "Successfully retrived all profiles";
 
         //return res.send({ error: false, data: results, message: message });
-        return res.send({ results });
+        return res.send({ error: false, data: results, message: message }); 
     });
 });
 
@@ -55,16 +55,49 @@ router.post('/', function (req, res) {
         return res.status(400).send({ error:true, message: 'Please provide a valid emailId' });
     else if (!password)
         return res.status(400).send({ error:true, message: 'Please provide a valid password' });        
-
-    // insert to db
-    dbConn.query("INSERT INTO profile (emailId,firstName,middleName,lastName,userName,phoneNo,password) VALUES (?,?,'singh',?,?,'713.517.7075',?)", 
-    [emailId,fname, lname,userName, password ], function (error, results, fields) {
+    //Validate
+    /*dbConn.query('SELECT * FROM profile where emailId = ? ', [id,id], function (error, results, fields) {
         if (error) throw error;
+
+        // check has data or not
+        let message = "";
+        if (results === undefined || results.length == 0)
+            message = "Profile not found";
+        else
+            message = "Successfully retrived profile data";
+
+        return res.send({ error: false, data: results[0], message: message });
+    });*/
+    // insert to db
+    dbConn.query("INSERT INTO profile (emailId,firstName,middleName,lastName,userName,phoneNo,password) VALUES (?,?,'singh',?,?,'0000000001',?)", 
+    [emailId,fname, lname,userName, password ], function (error, results, fields) {
+        if (error) {
+            throw error;
+        }
         return res.send({ error: false, data: results, message: 'profile successfully created' });
     });
 });
 
-// retrieve book by id 
+/** API to update phone number */
+router.put('/', function (req, res) {
+
+    let phoneNo = req.body.phoneNo;
+    let profileId = req.body.profileId;
+    
+    // validation
+    if (!phoneNo )
+        return res.status(400).send({ error:true, message: 'Please provide valid cell no to update' });
+
+    // insert to db
+    dbConn.query("UPDATE profile SET phoneNo = ? WHERE id = ?", 
+    [phoneNo, profileId], function (error, results, fields) {
+        if (error) throw error;
+        var successresult = "{}";
+        return res.send({ error: false, message: 'Profile updated successfully' });
+    });
+});
+
+// retrieve profile by id 
 router.get('/userid/:id', function (req, res) {
   
     let id = req.params.id;
@@ -73,7 +106,7 @@ router.get('/userid/:id', function (req, res) {
         return res.status(400).send({ error: true, message: 'Please provide profile id' });
     }
   
-    dbConn.query('SELECT * FROM profile where emailId = ?', id, function (error, results, fields) {
+    dbConn.query('SELECT * FROM profile where (emailId = ? OR id = ?)', [id,id], function (error, results, fields) {
         if (error) throw error;
 
         // check has data or not
@@ -133,7 +166,7 @@ router.get('/username/:userId', function (req, res) {
         // check has data or not
         let message = "";
         if (results === undefined || results.length == 0)
-            message = "Userid or password wrong";
+            message = "No data found";
         else
             message = "Successfully retrived user data";
 

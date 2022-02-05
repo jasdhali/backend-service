@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+const bodyParser = require('body-parser');
 
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -11,17 +12,23 @@ var profile = require('./src/profile')
 var accounts = require('./src/payment/accounts')
 var otpOperations = require('./src/otp/otpOperations')
 var chgops = require('./src/charginghome/ChargerOperations')
+var chargingHistory = require('./src/charginghome/ChargingHistory')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+app.use(bodyParser.urlencoded({
+  extended:true
+}));
 app.use('/birds', birds)
 app.use('/books', books)
 app.use('/profile', profile)
 app.use('/accounts', accounts)
 app.use('/otpOperations', otpOperations)
 app.use('/chgops', chgops)
+app.use('/chargingHistory', chargingHistory)
+
 
 
 // view engine setup
